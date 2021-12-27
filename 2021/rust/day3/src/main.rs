@@ -1,7 +1,7 @@
 use std::fs::File;
-use std::path::Path;
-use std::io::{self, BufRead};
 use std::io::Error;
+use std::io::{self, BufRead};
+use std::path::Path;
 
 use bitvec::prelude::*;
 
@@ -12,7 +12,9 @@ struct Power {
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where P: AsRef<Path>, {
+where
+    P: AsRef<Path>,
+{
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
 }
@@ -35,22 +37,49 @@ fn get_power_consumption(report_path: &Path) -> Result<Power, Error> {
     Ok(power_state)
 }
 
-fn get_gamma_rate(report_data: &Vec<BitVec>) -> Result<u32, Error> {
+fn get_gamma_rate(report_data: &Vec<BitVec>) -> Result<u32, std::io::Error> {
     let num_ones = 0;
     let num_zeroes = 0;
+    let gamma_rate: u32 = 0;
+    let is_first_reading = true;
+
+    // peek at first row to get the length of rows
+    let record_length = report_data[0].as_bitslice().len();
+
+    // for each column in the numbers
+    // if the number is a 1 add to num_ones
+    // if the number is a 0 add to num_zeroes
+    //
+    // if whatever is the most common digit is column n's value of the gamma rate where n is the
+    // current number of the column.
+    //
+    // the epsilon rate is calculated the same way but instead the least common bit for each volumn
+    // is used.
+    //
+    // power rate is the decimal version of gamma and epsilon rates multiplied together
+    // (gamma*epsilon).
 
     for row in report_data.iter() {
-        for column in row.iter() {
-            match column {
-                true => {
-                    num_ones += 1;
-                },
-                false => {
-                    num_zeroes += 1;
-                }
+        let row_data = row.as_bitslice();
+
+        // identify the length of the rows in the data
+        if is_first_reading {
+            record_length = row_data.len();
+        }
+
+        for 
+
+        match bitvec::ptr::read(column.into()) {
+            true => {
+                num_ones += 1;
+            }
+            false => {
+                num_zeroes += 1;
             }
         }
     }
+
+    Ok(gamma_rate)
 }
 
 fn parse_line(line: &str) -> Result<BitVec, Error> {
@@ -60,11 +89,11 @@ fn parse_line(line: &str) -> Result<BitVec, Error> {
         match character {
             '1' => {
                 output.push(true);
-            },
+            }
             '0' => {
                 output.push(false);
-            },
-            _ => {},
+            }
+            _ => {}
         }
     }
 
