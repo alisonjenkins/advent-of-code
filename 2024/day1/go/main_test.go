@@ -27,7 +27,7 @@ func TestFindRowLength(t *testing.T) {
 	})
 
 	t.Run("Works for real data", func(t *testing.T) {
-		testDataPath := "../day1-1.txt"
+		testDataPath := "../day1.txt"
 
 		input, err := os.ReadFile(testDataPath)
 		if err != nil {
@@ -107,7 +107,7 @@ func TestParseRecords(t *testing.T) {
 	})
 
 	t.Run("Works for real data", func(t *testing.T) {
-		testDataPath := "../day1-1.txt"
+		testDataPath := "../day1.txt"
 
 		input, err := os.ReadFile(testDataPath)
 		if err != nil {
@@ -122,12 +122,12 @@ func TestParseRecords(t *testing.T) {
 		}
 
 		expectedList1 := []int{
-			10182,
-			10336,
+			10078,
+			10154,
 		}
 		expectedList2 := []int{
-			10108,
-			10498,
+			10018,
+			10062,
 		}
 		expectedRecords := 1000
 
@@ -168,5 +168,31 @@ func TestFindDistance(t *testing.T) {
 	actual = findDistance(4, 1)
 	if actual != expected {
 		t.Fatalf("Expected to get '%d' as output but got '%d'", expected, actual)
+	}
+}
+
+func TestFindSimularityScore(t *testing.T) {
+	list1 := []int{
+		3,
+		4,
+		2,
+		1,
+		3,
+		3,
+	}
+	list2 := []int{
+		4,
+		3,
+		5,
+		3,
+		9,
+		3,
+	}
+
+	score := findSimilarityScore(list1, list2)
+	expectedScore := 31
+
+	if score != expectedScore {
+		t.Fatalf("Got score: %d but expected score: %d", score, expectedScore)
 	}
 }

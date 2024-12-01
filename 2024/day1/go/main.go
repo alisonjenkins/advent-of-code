@@ -9,34 +9,41 @@ import (
 )
 
 func main() {
-	day1P1InputPath := "../day1-1.txt"
+	day1P1InputPath := "../day1.txt"
 	input, err := os.ReadFile(day1P1InputPath)
 	if err != nil {
-		log.Fatalf("Expected to be able to read the data input file but got error: %s", err)
+		log.Fatalf(
+			"Expected to be able to read the day 1 part 1 data input file but got error: %s",
+			err,
+		)
 	}
 
-	output, err := day1p1(input)
-	if err != nil {
-		log.Fatalf("Failed to process input. Got error: %s", err)
-	}
-
-	fmt.Printf("Output:\n%d\n", output)
-}
-
-func day1p1(data []byte) (output int, err error) {
-	entryLength := findEntryLength(data)
-	list1, list2, records, err := parseRecords(entryLength, data)
+	entryLength := findEntryLength(input)
+	list1, list2, _, err := parseRecords(entryLength, input)
 	if err != nil {
 		log.Fatalf("Failed to parse records with error: %s", err)
 	}
 
-	totalDistance := 0
+	output := day1p1(list1, list2)
 
-	for curRecord := 0; curRecord < records; curRecord++ {
+	log.Printf("Part 1 Output:\n%d\n", output)
+
+	score := day1p2(list1, list2)
+
+	log.Printf("Part 2 Output:\n%d\n", score)
+}
+
+func day1p1(list1, list2 []int) (totalDistance int) {
+	for curRecord := range list1 {
 		totalDistance += findDistance(list1[curRecord], list2[curRecord])
 	}
 
-	return totalDistance, err
+	return
+}
+
+func day1p2(list1, list2 []int) (score int) {
+	score = findSimilarityScore(list1, list2)
+	return
 }
 
 func findDistance(entry1, entry2 int) int {
@@ -45,6 +52,21 @@ func findDistance(entry1, entry2 int) int {
 	}
 
 	return entry2 - entry1
+}
+
+func findSimilarityScore(list1, list2 []int) (score int) {
+	for _, list1Num := range list1 {
+		occurrences := 0
+		for _, list2Num := range list2 {
+			if list2Num == list1Num {
+				occurrences += 1
+			}
+		}
+
+		score += list1Num * occurrences
+	}
+
+	return
 }
 
 func findEntryLength(input []byte) (entryLength int) {
