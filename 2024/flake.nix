@@ -135,28 +135,32 @@
                       };
                   }
                 )
-                inputs.rust-overlay.overlays.default
+                (import inputs.rust-overlay)
               ];
             };
           in
           {
             default = pkgs.mkShellNoCC {
-              packages =
-                [
-                  pkgs.dive
-                  pkgs.just
-                  pkgs.libiconv
-                  pkgs.unstable.delve
-                  pkgs.unstable.go
-                  pkgs.rust-bin.stable.latest.default
-                ] ++ (if pkgs.stdenv.isDarwin then with pkgs.darwin.apple_sdk.frameworks;[
-                  CoreFoundation
-                  CoreServices
-                  Security
-                  SystemConfiguration
-                ] else [ ]);
+              packages = with pkgs; [
+                dive
+                hyperfine
+                just
+                libiconv
+                unstable.delve
+                unstable.go
+                lldb
+                (rust-bin.stable.latest.default.override {
+                  extensions = [ "rust-src" "llvm-tools-preview" ];
+                })
+              ] ++ (if pkgs.stdenv.isDarwin then with pkgs.darwin.apple_sdk.frameworks;[
+                CoreFoundation
+                CoreServices
+                Security
+                SystemConfiguration
+              ] else [ ]);
 
               shellHook = ''
+                export LIBCLANG_PATH="${pkgs.llvmPackages.libclang}/lib";
               '';
             };
           });
