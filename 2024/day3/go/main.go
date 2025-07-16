@@ -26,21 +26,23 @@ func main() {
 		total += curNum[0] * curNum[1]
 	}
 
-	fmt.Printf("Total is: %d\n", total)
+	// fmt.Printf("Total is: %d\n", total)
 
 	stripped, err := RemoveDontData(input)
 	if err != nil {
 		log.Fatalf("Remove don't data failed with error: %s", err)
 	}
 
-	nums, err = ParseValidMulData(stripped)
+	fmt.Print(string(stripped))
 
-	total = 0
-	for _, curNum := range nums {
-		total += curNum[0] * curNum[1]
-	}
+	// nums, err = ParseValidMulData(stripped)
+	//
+	// total = 0
+	// for _, curNum := range nums {
+	// 	total += curNum[0] * curNum[1]
+	// }
 
-	fmt.Printf("don't Total is: %d\n", total)
+	// fmt.Printf("don't Total is: %d\n", total)
 }
 
 func ParseValidMulData(input []byte) (output [][]int, err error) {
